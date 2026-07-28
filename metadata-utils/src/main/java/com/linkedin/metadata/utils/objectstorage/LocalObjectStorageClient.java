@@ -1,6 +1,7 @@
 package com.linkedin.metadata.utils.objectstorage;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.annotation.Nonnull;
@@ -44,6 +45,23 @@ public class LocalObjectStorageClient implements ObjectStorageClient {
       log.debug("Wrote {} bytes to {}", bytes.length, target);
     } catch (IOException e) {
       throw new RuntimeException("Failed to write object to local storage: " + e.getMessage(), e);
+    }
+  }
+
+  @Override
+  @Nonnull
+  public String getObjectAsString(@Nonnull String objectKey) {
+    if (!isConfigured()) {
+      throw new IllegalStateException("Local object storage root path is not configured");
+    }
+    String relativeKey =
+        ObjectStorageKeyResolver.joinKey(null, objectKey, ObjectStorageProvider.LOCAL);
+    Path target = ObjectStoragePathValidator.resolveUnderRoot(Path.of(rootPath), relativeKey);
+    try {
+      return Files.readString(target, StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new RuntimeException(
+          "Failed to read object from local storage '" + target + "': " + e.getMessage(), e);
     }
   }
 

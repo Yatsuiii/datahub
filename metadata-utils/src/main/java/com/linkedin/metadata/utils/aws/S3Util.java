@@ -49,6 +49,16 @@ public class S3Util {
     this.s3Presigner = s3Presigner != null ? s3Presigner : createPresigner();
   }
 
+  /**
+   * The underlying client, exposed so callers needing raw S3 operations not wrapped here reuse this
+   * bean's credential resolution (role assumption, endpoint override, region) rather than standing
+   * up a second S3 client of their own.
+   */
+  @Nonnull
+  public S3Client getS3Client() {
+    return s3Client;
+  }
+
   /** Creates S3Client with StsAssumeRoleCredentialsProvider for automatic credential refresh. */
   private static S3Client createS3Client(@Nonnull StsClient stsClient, @Nonnull String roleArn) {
     try {

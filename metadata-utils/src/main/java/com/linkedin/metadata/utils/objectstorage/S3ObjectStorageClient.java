@@ -12,6 +12,7 @@ import software.amazon.awssdk.services.s3.model.CompleteMultipartUploadRequest;
 import software.amazon.awssdk.services.s3.model.CompletedMultipartUpload;
 import software.amazon.awssdk.services.s3.model.CompletedPart;
 import software.amazon.awssdk.services.s3.model.CreateMultipartUploadRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.UploadPartRequest;
 
@@ -60,6 +61,23 @@ public class S3ObjectStorageClient implements ObjectStorageClient {
       putObjectSinglePart(key, bytes);
     } else {
       putObjectMultipart(key, bytes);
+    }
+  }
+
+  @Override
+  @Nonnull
+  public String getObjectAsString(@Nonnull String objectKey) {
+    if (!isConfigured()) {
+      throw new IllegalStateException("S3 bucket name is not configured");
+    }
+    String key = ObjectStorageKeyResolver.joinKey(pathPrefix, objectKey, ObjectStorageProvider.S3);
+    try {
+      return s3Client
+          .getObjectAsBytes(GetObjectRequest.builder().bucket(bucketName).key(key).build())
+          .asUtf8String();
+    } catch (Exception e) {
+      throw new RuntimeException(
+          "Failed to read s3://" + bucketName + "/" + key + ": " + e.getMessage(), e);
     }
   }
 
