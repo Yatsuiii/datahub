@@ -6,6 +6,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertThrows;
 import static org.testng.Assert.assertTrue;
 
@@ -55,6 +56,15 @@ public class S3UtilTest {
   public void testConstructorWithS3Client() {
     S3Util s3Util = new S3Util(mockS3Client, mockS3Presigner);
     assertNotNull(s3Util);
+  }
+
+  @Test
+  public void testGetS3ClientReturnsTheSameClientPassedToConstructor() {
+    // Callers (e.g. the ingestion CLI version matrix factory) reuse this to build their own S3
+    // operations against this bean's already-resolved role/endpoint/region, instead of standing up
+    // a second client.
+    S3Util s3Util = new S3Util(mockS3Client, mockS3Presigner);
+    assertSame(s3Util.getS3Client(), mockS3Client);
   }
 
   @Test
