@@ -939,6 +939,7 @@ public class PropertiesCollectorConfigurationTest extends AbstractTestNGSpringCo
           // Additional configuration
           "metadataChangeProposal.consumer.batch.enabled",
           "metadataChangeProposal.consumer.batch.size",
+          "metadataChangeProposal.sideEffects.aliases.enabled",
           "metadataChangeProposal.sideEffects.dataProductUnset.enabled",
           "metadataChangeProposal.sideEffects.schemaField.enabled",
           "metadataChangeProposal.throttle.components.apiRequests.enabled",
@@ -1003,6 +1004,7 @@ public class PropertiesCollectorConfigurationTest extends AbstractTestNGSpringCo
           "structuredProperties.dropMissingPropertyValuesWithWarning",
           "structuredProperties.keywordMaxLength",
           "structuredProperties.systemUpdateEnabled",
+          "structuredProperties.typeMismatchReindexEnabled",
           "structuredProperties.writeEnabled",
           "telemetry.enabledCli",
           "telemetry.enabledIngestion",
